@@ -2,7 +2,9 @@
 
 这是我的个人 SketchyBar 配置，为 macOS 提供美观且功能丰富的状态栏。
 
-![预览图](./preview.png)
+## 预览图
+
+这是我的SketchyBar配置，包含Brew更新提醒、日期时间、天气信息等功能。
 
 ## 功能特点
 
