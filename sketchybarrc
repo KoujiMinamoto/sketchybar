@@ -1,0 +1,123 @@
+#!/bin/bash
+
+# 加载配置文件
+source "$CONFIG_DIR/config.sh"
+
+# 根据主题加载颜色
+if [[ "$THEME" == "dark" ]]; then
+  source "$CONFIG_DIR/themes/dark.sh"
+elif [[ "$THEME" == "light" ]]; then
+  source "$CONFIG_DIR/themes/light.sh"
+elif [[ "$THEME" == "custom" ]]; then
+  source "$CONFIG_DIR/themes/custom.sh"
+else
+  source "$CONFIG_DIR/colors.sh" # 默认颜色
+fi
+
+source "$CONFIG_DIR/icons.sh"  # 加载所有图标
+
+ITEM_DIR="$CONFIG_DIR/items"     # 配置项目的目录
+PLUGIN_DIR="$CONFIG_DIR/plugins" # 存储所有插件脚本的目录
+
+FONT="SF Pro"  # 需要有 Regular, Bold, Semibold, Heavy 和 Black 变体
+
+PADDINGS=3            # 所有填充使用此值（图标、标签、背景）
+BACKGROUND_PADDINGS=2 # 所有填充使用此值（图标、标签、背景）
+
+# 设置并启动辅助进程
+HELPER=git.felix.helper
+killall helper 2>/dev/null
+
+# 只在需要时重新编译 helper
+if [[ "$FORCE_HELPER_REBUILD" == "true" ]] || [ ! -f "$CONFIG_DIR/helper/helper" ]; then
+  (cd $CONFIG_DIR/helper && make)
+fi
+
+$CONFIG_DIR/helper/helper $HELPER >/dev/null 2>&1 &
+
+# 卸载 macOS 音量更改的屏幕指示器覆盖
+launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist >/dev/null 2>&1 &
+
+# Setting up the general bar appearance of the bar
+bar=(
+  height=36
+  color=$BAR_COLOR
+  border_width=0
+  border_color=$BAR_BORDER_COLOR
+  position=top
+  sticky=on
+  padding_right=13
+  padding_left=13
+  y_offset=0
+  margin=0
+  corner_radius=0
+  blur_radius=20
+  shadow=on
+)
+
+sketchybar --bar "${bar[@]}"
+
+# Setting up default values
+defaults=(
+  updates=when_shown
+  icon.font="$FONT:Bold:14.0"
+  icon.color=$ICON_COLOR
+  icon.padding_left=$PADDINGS
+  icon.padding_right=$PADDINGS
+  label.font="$FONT:Semibold:13.0"
+  label.color=$LABEL_COLOR
+  label.padding_left=$PADDINGS
+  label.padding_right=$PADDINGS
+  padding_right=$PADDINGS
+  padding_left=$PADDINGS
+  background.padding_right=$BACKGROUND_PADDINGS
+  background.padding_left=$BACKGROUND_PADDINGS
+  background.height=28
+  background.corner_radius=10
+  background.border_width=1
+  popup.background.border_width=1
+  popup.background.corner_radius=10
+  popup.background.border_color=$POPUP_BORDER_COLOR
+  popup.background.color=$POPUP_BACKGROUND_COLOR
+  popup.blur_radius=20
+  popup.background.shadow.drawing=on
+)
+
+sketchybar --default "${defaults[@]}"
+
+# 左侧模块
+[[ "$ENABLE_APPLE" == "true" ]] && source "$ITEM_DIR/apple.sh"
+[[ "$ENABLE_SPACES" == "true" ]] && source "$ITEM_DIR/spaces.sh"
+[[ "$ENABLE_YABAI" == "true" ]] && source "$ITEM_DIR/yabai.sh"
+[[ "$ENABLE_FRONT_APP" == "true" ]] && source "$ITEM_DIR/front_app.sh"
+
+# 中间模块
+[[ "$ENABLE_SPOTIFY" == "true" ]] && source "$ITEM_DIR/spotify.sh"
+[[ "$ENABLE_MUSIC" == "true" ]] && source "$ITEM_DIR/music.sh"
+
+# 右侧模块
+[[ "$ENABLE_CALENDAR" == "true" ]] && source "$ITEM_DIR/calendar.sh"
+[[ "$ENABLE_BREW" == "true" ]] && source "$ITEM_DIR/brew.sh"
+[[ "$ENABLE_GITHUB" == "true" ]] && source "$ITEM_DIR/github.sh"
+[[ "$ENABLE_BATTERY" == "true" ]] && source "$ITEM_DIR/battery.sh"
+[[ "$ENABLE_KEYBOARD" == "true" ]] && source "$ITEM_DIR/keyboard.sh"
+[[ "$ENABLE_VOLUME" == "true" ]] && source "$ITEM_DIR/volume.sh"
+[[ "$ENABLE_WIFI" == "true" ]] && source "$ITEM_DIR/wifi.sh"
+[[ "$ENABLE_WECHAT" == "true" ]] && source "$ITEM_DIR/wechat.sh"
+[[ "$ENABLE_QQ" == "true" ]] && source "$ITEM_DIR/qq.sh"
+[[ "$ENABLE_WEATHER" == "true" ]] && source "$ITEM_DIR/weather.sh"
+[[ "$ENABLE_CPU" == "true" ]] && source "$ITEM_DIR/cpu.sh"
+[[ "$ENABLE_MEMORY" == "true" ]] && source "$ITEM_DIR/memory.sh"
+[[ "$ENABLE_HEADPHONE" == "true" ]] && source "$ITEM_DIR/headphone.sh"
+[[ "$ENABLE_CAVA" == "true" ]] && source "$ITEM_DIR/cava.sh"
+
+# 新增应用
+[[ "$ENABLE_LETSVPN" == "true" ]] && source "$ITEM_DIR/letsvpn.sh"
+[[ "$ENABLE_DISCORD" == "true" ]] && source "$ITEM_DIR/discord.sh"
+[[ "$ENABLE_SLACK" == "true" ]] && source "$ITEM_DIR/slack.sh"
+[[ "$ENABLE_FEISHU" == "true" ]] && source "$ITEM_DIR/feishu.sh"
+
+# Forcing all item scripts to run (never do this outside of sketchybarrc)
+sketchybar --update
+
+echo "sketchybar configuation loaded.."
