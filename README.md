@@ -4,7 +4,7 @@
 
 ## 预览图
 
-![预览图](https://github.com/KoujiMinamoto/sketchybar/blob/main/preview.png?raw=true)
+![image](https://github.com/KoujiMinamoto/sketchybar/blob/main/preview.png)
 
 这是我的SketchyBar配置，包含Brew更新提醒、日期时间、天气信息等功能。
 
