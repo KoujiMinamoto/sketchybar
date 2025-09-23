@@ -107,7 +107,7 @@ sketchybar --default "${defaults[@]}"
 [[ "$ENABLE_QQ" == "true" ]] && source "$ITEM_DIR/qq.sh"
 [[ "$ENABLE_WEATHER" == "true" ]] && source "$ITEM_DIR/weather.sh"
 [[ "$ENABLE_CPU" == "true" ]] && source "$ITEM_DIR/cpu.sh"
-[[ "$ENABLE_MEMORY" == "true" ]] && source "$ITEM_DIR/memory.sh"
+# [[ "$ENABLE_MEMORY" == "true" ]] && source "$ITEM_DIR/memory.sh"
 [[ "$ENABLE_HEADPHONE" == "true" ]] && source "$ITEM_DIR/headphone.sh"
 [[ "$ENABLE_CAVA" == "true" ]] && source "$ITEM_DIR/cava.sh"
 
